@@ -43,17 +43,17 @@ wine_pkgs="wine-staging winetricks-git wine-nine wineasio \
 
 devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
 
-gaming_pkgs="lutris python-protobuf steam steam-native-runtime steamtinkerlaunch \
-	minigalaxy gamehub legendary prismlauncher bottles playonlinux obs-studio \
+gaming_pkgs="steam steam-native-runtime steamtinkerlaunch \
+	gamehub legendary prismlauncher bottles \
 	retroarch retroarch-assets-ozone libretro-beetle-psx-hw sunshine \
 	libretro-blastem libretro-bsnes libretro-dolphin duckstation \
 	libretro-gambatte libretro-melonds libretro-mgba libretro-nestopia \
 	libretro-parallel-n64 libretro-pcsx2 libretro-picodrive libretro-ppsspp \
 	libretro-retrodream libretro-yabause pcsx2-avx-git"
 
-extra_pkgs="nano ttf-dejavu ttf-liberation firefox mpv geany pcmanfm \
-	htop qbittorrent speedcrunch gpicview file-roller openbox lxterminal \
-	yt-dlp minizip nautilus genymotion jre17-openjdk"
+extra_pkgs="nano ttf-dejavu ttf-liberation mpv geany pcmanfm \
+	htop speedcrunch gpicview file-roller openbox lxterminal \
+	minizip genymotion jre8-openjdk jre17-openjdk jre21-openjdk"
 
 # Packages to install
 # You can add packages that you want and remove packages that you don't need
@@ -62,7 +62,7 @@ extra_pkgs="nano ttf-dejavu ttf-liberation firefox mpv geany pcmanfm \
 export packagelist="${audio_pkgs} ${core_pkgs} ${video_pkgs} ${wine_pkgs} ${devel_pkgs} ${gaming_pkgs} ${extra_pkgs}"
 
 # If you want to install AUR packages, specify them in this variable
-export aur_packagelist="faugus-launcher-git"
+export aur_packagelist="heroic-games-launcher jellyfin-media-player"
 
 # ALHP is a repository containing packages from the official Arch Linux
 # repos recompiled with -O3, LTO and optimizations for modern CPUs for
