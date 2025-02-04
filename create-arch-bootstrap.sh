@@ -19,17 +19,7 @@ video_pkgs="mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon \
 	libva-intel-driver lib32-libva-intel-driver intel-media-driver \
 	mesa-utils vulkan-tools libva-utils lib32-mesa-utils"
 
-wine_pkgs="wine-staging wine-nine wineasio \
-freetype2 lib32-freetype2 libxrandr lib32-libxrandr \
-libxcomposite lib32-libxcomposite \
-mpg123 lib32-mpg123 libxinerama lib32-libxinerama \
-openal lib32-openal libpulse lib32-libpulse alsa-plugins \
-lib32-alsa-plugins alsa-lib lib32-alsa-lib gnutls lib32-gnutls \
-gst-plugins-base lib32-gst-plugins-base libpng lib32-libpng \
-libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite \
-vulkan-icd-loader lib32-vulkan-icd-loader \
-sdl2 lib32-sdl2 vkd3d lib32-vkd3d \
-gamemode lib32-gamemode cabextract wget"
+wine_pkgs="wine32"
 
 devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
 
