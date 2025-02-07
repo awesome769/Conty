@@ -23,7 +23,7 @@ wine_pkgs="wine32"
 
 devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
 
-gaming_pkgs="prismlauncher"
+gaming_pkgs="steam prismlauncher"
 
 extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk"
 
