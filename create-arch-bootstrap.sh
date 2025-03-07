@@ -23,7 +23,7 @@ wine_pkgs="wine32"
 
 devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
 
-gaming_pkgs="prismlauncher gamemode"
+gaming_pkgs="steam prismlauncher gamemode umu-launcher"
 
 extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mono-complete mangohud"
 
@@ -34,7 +34,7 @@ extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-open
 export packagelist="${audio_pkgs} ${core_pkgs} ${video_pkgs} ${wine_pkgs} ${devel_pkgs} ${gaming_pkgs} ${extra_pkgs}"
 
 # If you want to install AUR packages, specify them in this variable
-export aur_packagelist="faugus-launcher-git jellyfin-media-player vesktop vscodium"
+export aur_packagelist="heroic-games-launcher-bin jellyfin-media-player vesktop-bin vscodium-bin"
 
 # ALHP is a repository containing packages from the official Arch Linux
 # repos recompiled with -O3, LTO and optimizations for modern CPUs for
