@@ -2,27 +2,89 @@
 
 # Dependencies: curl tar gzip grep coreutils
 # Root rights are required
-source settings.sh
 
-check_command_available() {
-	for cmd in "$@"; do
-		if ! command -v "$cmd" >&-; then
-			echo "$cmd is required!"
-			exit 1
-		fi
-	done
-}
-check_command_available curl gzip grep sha256sum
+########################################################################
+
+# Package groups
+audio_pkgs="alsa-lib lib32-alsa-lib alsa-plugins lib32-alsa-plugins libpulse \
+	lib32-libpulse alsa-tools alsa-utils pipewire lib32-pipewire pipewire-pulse pipewire-jack lib32-pipewire-jack"
+
+core_pkgs="xorg-xwayland qt6-wayland wayland \
+	lib32-wayland qt5-wayland xorg-server-xephyr gamescope"
+
+video_pkgs="mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon \
+	vulkan-intel lib32-vulkan-intel \
+	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers \
+	lib32-vulkan-mesa-layers libva-mesa-driver lib32-libva-mesa-driver \
+	libva-intel-driver lib32-libva-intel-driver intel-media-driver \
+	mesa-utils vulkan-tools libva-utils lib32-mesa-utils"
+
+wine_pkgs="wine32"
+
+devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
+
+gaming_pkgs="steam prismlauncher gamemode umu-launcher"
+
+extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mono-complete mangohud torbrowser-launcher openssh xsel"
+
+# Packages to install
+# You can add packages that you want and remove packages that you don't need
+# Apart from packages from the official Arch repos, you can also specify
+# packages from the Chaotic-AUR repo
+export packagelist="${audio_pkgs} ${core_pkgs} ${video_pkgs} ${wine_pkgs} ${devel_pkgs} ${gaming_pkgs} ${extra_pkgs}"
+
+# If you want to install AUR packages, specify them in this variable
+export aur_packagelist="heroic-games-launcher-bin vesktop-bin vscodium-bin wine-tkg-staging-bin lbry-desktop-bin"
+
+# ALHP is a repository containing packages from the official Arch Linux
+# repos recompiled with -O3, LTO and optimizations for modern CPUs for
+# better performance
+#
+# When this repository is enabled, most of the packages from the official
+# Arch Linux repos will be replaced with their optimized versions from ALHP
+#
+# Set this variable to true, if you want to enable this repository
+enable_alhp_repo="false"
+
+# Feature levels for ALHP. Available feature levels are 2 and 3
+# For level 2 you need a CPU with SSE4.2 instructions
+# For level 3 you need a CPU with AVX2 instructions
+alhp_feature_level="2"
+
+########################################################################
 
 if [ $EUID != 0 ]; then
 	echo "Root rights are required!"
+
+	exit 1
+fi
+
+if ! command -v curl 1>/dev/null; then
+	echo "curl is required!"
+	exit 1
+fi
+
+if ! command -v gzip 1>/dev/null; then
+	echo "gzip is required!"
+	exit 1
+fi
+
+if ! command -v grep 1>/dev/null; then
+	echo "grep is required!"
+	exit 1
+fi
+
+if ! command -v sha256sum 1>/dev/null; then
+	echo "sha256sum is required!"
 	exit 1
 fi
 
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-bootstrap="${script_dir}"/root.x86_64
 
 mount_chroot () {
+	# First unmount just in case
+	umount -Rl "${bootstrap}"
+
 	mount --bind "${bootstrap}" "${bootstrap}"
 	mount -t proc /proc "${bootstrap}"/proc
 	mount --bind /sys "${bootstrap}"/sys
@@ -34,7 +96,6 @@ mount_chroot () {
 
 	rm -f "${bootstrap}"/etc/resolv.conf
 	cp /etc/resolv.conf "${bootstrap}"/etc/resolv.conf
-	cp "${script_dir}"/settings.sh "${bootstrap}"/conty_settings.sh
 
 	mkdir -p "${bootstrap}"/run/shm
 }
@@ -57,24 +118,29 @@ run_in_chroot () {
 }
 
 install_packages () {
-	source /conty_settings.sh
 	echo "Checking if packages are present in the repos, please wait..."
+	for p in ${packagelist}; do
+		if pacman -Sp "${p}" &>/dev/null; then
+			good_pkglist="${good_pkglist} ${p}"
+		else
+			bad_pkglist="${bad_pkglist} ${p}"
+		fi
+	done
 
-	declare -a bad_pkglist
-	mapfile -t bad_pkglist < <(comm -23 \
-									<(printf '%s\n' "${PACKAGES[@]}" | sort -u) \
-									<(pacman -Slq | sort -u))
-	if [ "${#bad_pkglist[@]}" -gt 0 ]; then
-		echo "These packages are not available in arch repositories: " "${bad_pkglist[@]}"
-		exit 1
+	if [ -n "${bad_pkglist}" ]; then
+		echo ${bad_pkglist} > /opt/bad_pkglist.txt
 	fi
 
 	for i in {1..10}; do
-		if pacman --noconfirm --needed -S "${PACKAGES[@]}" || [ "$?" -gt 127 ]; then
+		if pacman --noconfirm --needed -S ${good_pkglist}; then
+			good_install=1
 			break
 		fi
 	done
 
+	if [ -z "${good_install}" ]; then
+		echo > /opt/pacman_failed.txt
+	fi
 }
 
 install_aur_packages () {
@@ -99,30 +165,93 @@ install_aur_packages () {
 }
 
 generate_pkg_licenses_file () {
-	pacman -Qi | grep -E '^Name|Licenses' |  cut -d ":" -f 2 | paste -d ' ' - - > /pkglicenses.txt
+	for p in $(pacman -Q | cut -d' ' -f1); do
+		echo -n $(pacman -Qi "${p}" | grep -E 'Name|Licenses' | cut -d ":" -f 2) >>/pkglicenses.txt
+		echo >>/pkglicenses.txt
+	done
 }
 
 generate_localegen () {
-	printf '%s\n' "${LOCALES[@]}" > locale.gen
+	cat <<EOF > locale.gen
+ar_EG.UTF-8 UTF-8
+en_US.UTF-8 UTF-8
+en_GB.UTF-8 UTF-8
+en_CA.UTF-8 UTF-8
+en_SG.UTF-8 UTF-8
+es_MX.UTF-8 UTF-8
+zh_CN.UTF-8 UTF-8
+fr_FR.UTF-8 UTF-8
+ru_RU.UTF-8 UTF-8
+ru_UA.UTF-8 UTF-8
+es_ES.UTF-8 UTF-8
+de_DE.UTF-8 UTF-8
+pt_BR.UTF-8 UTF-8
+it_IT.UTF-8 UTF-8
+id_ID.UTF-8 UTF-8
+ja_JP.UTF-8 UTF-8
+bg_BG.UTF-8 UTF-8
+pl_PL.UTF-8 UTF-8
+da_DK.UTF-8 UTF-8
+ko_KR.UTF-8 UTF-8
+tr_TR.UTF-8 UTF-8
+hu_HU.UTF-8 UTF-8
+cs_CZ.UTF-8 UTF-8
+bn_IN UTF-8
+hi_IN UTF-8
+EOF
 }
 
 generate_mirrorlist () {
-	printf '%s\n' "$MIRRORLIST" > mirrorlist
+	cat <<EOF > mirrorlist
+Server = https://mirror1.sl-chat.ru/archlinux/\$repo/os/\$arch
+Server = https://mirror3.sl-chat.ru/archlinux/\$repo/os/\$arch
+Server = https://us.mirrors.cicku.me/archlinux/\$repo/os/\$arch
+Server = https://mirror.osbeck.com/archlinux/\$repo/os/\$arch
+Server = https://md.mirrors.hacktegic.com/archlinux/\$repo/os/\$arch
+Server = https://geo.mirror.pkgbuild.com/\$repo/os/\$arch
+Server = https://mirror.qctronics.com/archlinux/\$repo/os/\$arch
+Server = https://arch.mirror.constant.com/\$repo/os/\$arch
+Server = https://america.mirror.pkgbuild.com/\$repo/os/\$arch
+Server = https://mirror.tmmworkshop.com/archlinux/\$repo/os/\$arch
+EOF
 }
 
 cd "${script_dir}" || exit 1
 
+bootstrap="${script_dir}"/root.x86_64
 
-curl -#LO "$BOOTSTRAP_SHA256SUM_FILE_URL" || (echo "Failed to download sha256sums.txt file"; exit 1)
-for link in "${BOOTSTRAP_DOWNLOAD_URLS[@]}"; do
-	echo "Downloading Arch Linux bootstrap from $link"
-	curl -#LO "$link"
+curl -#LO 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+curl -#LO 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 
-	echo "Verifying the integrity of the bootstrap"
-	if sha256sum --ignore-missing -c sha256sums.txt &>/dev/null; then
-		bootstrap_is_good=1
-		break
+if [ ! -s chaotic-keyring.pkg.tar.zst ] || [ ! -s chaotic-mirrorlist.pkg.tar.zst ]; then
+	echo "Seems like Chaotic-AUR keyring or mirrorlist is currently unavailable"
+	echo "Please try again later"
+	exit 1
+fi
+
+bootstrap_urls=("arch.hu.fo" \
+		"mirror.cyberbits.eu" \
+		"mirror.osbeck.com" \
+		"mirror.lcarilla.de" \
+		"mirror.moson.org" \
+  		"mirror.f4st.host")
+
+echo "Downloading Arch Linux bootstrap"
+
+for link in "${bootstrap_urls[@]}"; do
+	curl -#LO "https://${link}/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
+	curl -#LO "https://${link}/archlinux/iso/latest/sha256sums.txt"
+
+	if [ -s sha256sums.txt ]; then
+		grep bootstrap-x86_64 sha256sums.txt > sha256.txt
+
+		echo "Verifying the integrity of the bootstrap"
+		if sha256sum -c sha256.txt &>/dev/null; then
+			bootstrap_is_good=1
+			break
+		fi
 	fi
+
 	echo "Download failed, trying again with different mirror"
 done
 
@@ -131,12 +260,9 @@ if [ -z "${bootstrap_is_good}" ]; then
 	exit 1
 fi
 
-# Unmount first just in case
-unmount_chroot
-
 rm -rf "${bootstrap}"
 tar xf archlinux-bootstrap-x86_64.tar.zst
-rm archlinux-bootstrap-x86_64.tar.zst sha256sums.txt
+rm archlinux-bootstrap-x86_64.tar.zst sha256sums.txt sha256.txt
 
 mount_chroot
 
@@ -163,19 +289,16 @@ mv mirrorlist "${bootstrap}"/etc/pacman.d/mirrorlist
 } >> "${bootstrap}"/etc/pacman.conf
 
 run_in_chroot pacman-key --init
+echo "keyserver hkps://keyserver.ubuntu.com" >> "${bootstrap}"/etc/pacman.d/gnupg/gpg.conf
 run_in_chroot pacman-key --populate archlinux
 
 # Add Chaotic-AUR repo
-run_in_chroot pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+run_in_chroot pacman-key --recv-key 3056513887B78AEB
 run_in_chroot pacman-key --lsign-key 3056513887B78AEB
 
-if ! run_in_chroot pacman --noconfirm -U \
-	 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
-	 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'; then
-	echo "Seems like Chaotic-AUR keyring or mirrorlist is currently unavailable"
-	echo "Please try again later"
-	exit 1
-fi
+mv chaotic-keyring.pkg.tar.zst chaotic-mirrorlist.pkg.tar.zst "${bootstrap}"/opt
+run_in_chroot pacman --noconfirm -U /opt/chaotic-keyring.pkg.tar.zst /opt/chaotic-mirrorlist.pkg.tar.zst
+rm "${bootstrap}"/opt/chaotic-keyring.pkg.tar.zst "${bootstrap}"/opt/chaotic-mirrorlist.pkg.tar.zst
 
 {
 	echo
@@ -183,17 +306,27 @@ fi
 	echo "Include = /etc/pacman.d/chaotic-mirrorlist"
 } >> "${bootstrap}"/etc/pacman.conf
 
+# The ParallelDownloads feature of pacman
+# Speeds up packages installation, especially when there are many small packages to install
+sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 3/g' "${bootstrap}"/etc/pacman.conf
+
 # Do not install unneeded files (man pages and Nvidia firmwares)
 sed -i 's/#NoExtract   =/NoExtract   = usr\/lib\/firmware\/nvidia\/\* usr\/share\/man\/\*/' "${bootstrap}"/etc/pacman.conf
 
 run_in_chroot pacman -Sy archlinux-keyring --noconfirm
 run_in_chroot pacman -Su --noconfirm
 
-if [ -n "$ENABLE_ALHP_REPO" ]; then
+if [ "${enable_alhp_repo}" = "true" ]; then
+	if [ "${alhp_feature_level}" -gt 2 ]; then
+		alhp_feature_level=3
+	else
+		alhp_feature_level=2
+	fi
+
 	run_in_chroot pacman --noconfirm --needed -S alhp-keyring alhp-mirrorlist
 	sed -i "s/#\[multilib\]/#/" "${bootstrap}"/etc/pacman.conf
-	sed -i "s/\[core\]/\[core-x86-64-v${ALHP_FEATURE_LEVEL}\]\nInclude = \/etc\/pacman.d\/alhp-mirrorlist\n\n\[extra-x86-64-v${ALHP_FEATURE_LEVEL}\]\nInclude = \/etc\/pacman.d\/alhp-mirrorlist\n\n\[core\]/" "${bootstrap}"/etc/pacman.conf
-	sed -i "s/\[multilib\]/\[multilib-x86-64-v${ALHP_FEATURE_LEVEL}\]\nInclude = \/etc\/pacman.d\/alhp-mirrorlist\n\n\[multilib\]/" "${bootstrap}"/etc/pacman.conf
+	sed -i "s/\[core\]/\[core-x86-64-v${alhp_feature_level}\]\nInclude = \/etc\/pacman.d\/alhp-mirrorlist\n\n\[extra-x86-64-v${alhp_feature_level}\]\nInclude = \/etc\/pacman.d\/alhp-mirrorlist\n\n\[core\]/" "${bootstrap}"/etc/pacman.conf
+	sed -i "s/\[multilib\]/\[multilib-x86-64-v${alhp_feature_level}\]\nInclude = \/etc\/pacman.d\/alhp-mirrorlist\n\n\[multilib\]/" "${bootstrap}"/etc/pacman.conf
 	run_in_chroot pacman -Syu --noconfirm
 fi
 
@@ -210,17 +343,20 @@ if [ -z "${reflector_used}" ]; then
 fi
 
 export -f install_packages
-if ! run_in_chroot bash -c install_packages; then
+run_in_chroot bash -c install_packages
+
+if [ -f "${bootstrap}"/opt/pacman_failed.txt ]; then
 	unmount_chroot
+	echo "Pacman failed to install some packages"
 	exit 1
 fi
 
-if [ "${#AUR_PACKAGES[@]}" -ne 0 ]; then
+if [ -n "${aur_packagelist}" ]; then
 	run_in_chroot pacman --noconfirm --needed -S base-devel yay
 	run_in_chroot useradd -m -G wheel aur
 	echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> "${bootstrap}"/etc/sudoers
 
-	for p in "${AUR_PACKAGES[@]}"; do
+	for p in ${aur_packagelist}; do
 		aur_pkgs="${aur_pkgs} aur/${p}"
 	done
 	export aur_pkgs
@@ -251,7 +387,6 @@ rm -f "${bootstrap}"/var/cache/pacman/pkg/*
 # This is needed for bubblewrap to be able to bind real files/dirs to them
 # later in the conty-start.sh script
 mkdir "${bootstrap}"/media
-mkdir "${bootstrap}"/initrd
 mkdir -p "${bootstrap}"/usr/share/steam/compatibilitytools.d
 touch "${bootstrap}"/etc/asound.conf
 touch "${bootstrap}"/etc/localtime
@@ -263,6 +398,13 @@ ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf "${bootstrap}"/etc/f
 
 clear
 echo "Done"
+
+if [ -f "${bootstrap}"/opt/bad_pkglist.txt ]; then
+	echo
+	echo "These packages are not in the repos and have not been installed:"
+	cat "${bootstrap}"/opt/bad_pkglist.txt
+	rm "${bootstrap}"/opt/bad_pkglist.txt
+fi
 
 if [ -f "${bootstrap}"/opt/bad_aur_pkglist.txt ]; then
 	echo
