@@ -19,7 +19,7 @@ video_pkgs="mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon \
 	libva-intel-driver lib32-libva-intel-driver intel-media-driver \
 	mesa-utils vulkan-tools libva-utils lib32-mesa-utils"
 
-wine_pkgs="wine32"
+wine_pkgs="wine32 gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav"
 
 devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
 
