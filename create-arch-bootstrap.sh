@@ -25,7 +25,7 @@ devel_pkgs="base-devel git meson mingw-w64-gcc cmake"
 
 gaming_pkgs="steam prismlauncher gamemode umu-launcher"
 
-extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mono-complete mangohud torbrowser-launcher openssh xsel dolphin"
+extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mono-complete mangohud torbrowser-launcher openssh xsel obs-studio"
 
 # Packages to install
 # You can add packages that you want and remove packages that you don't need
