@@ -17,7 +17,7 @@ video_pkgs="mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon \
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers \
 	lib32-vulkan-mesa-layers libva-mesa-driver lib32-libva-mesa-driver \
 	libva-intel-driver lib32-libva-intel-driver intel-media-driver \
-	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal"
+	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal lib32-glu"
 
 wine_pkgs="wine32 gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav"
 
@@ -34,7 +34,7 @@ extra_pkgs="nano ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-open
 export packagelist="${audio_pkgs} ${core_pkgs} ${video_pkgs} ${wine_pkgs} ${devel_pkgs} ${gaming_pkgs} ${extra_pkgs}"
 
 # If you want to install AUR packages, specify them in this variable
-export aur_packagelist="heroic-games-launcher-bin vesktop-bin vscodium-bin wine-tkg-staging-bin lbry-desktop-bin"
+export aur_packagelist="heroic-games-launcher-bin vesktop-bin vscodium-bin wine-tkg-staging-bin lbry-desktop-bin lib32-openssl-1.0"
 
 # ALHP is a repository containing packages from the official Arch Linux
 # repos recompiled with -O3, LTO and optimizations for modern CPUs for
