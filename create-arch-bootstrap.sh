@@ -17,7 +17,8 @@ video_pkgs="mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon \
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers \
 	lib32-vulkan-mesa-layers libva-mesa-driver lib32-libva-mesa-driver \
 	libva-intel-driver lib32-libva-intel-driver intel-media-driver \
-	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal lib32-glu"
+	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal \
+	lib32-glu nettle openal xdelta3 inotify-tools"
 
 wine_pkgs="wine32 gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav"
 
