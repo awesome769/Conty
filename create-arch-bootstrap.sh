@@ -10,7 +10,7 @@ audio_pkgs="alsa-lib lib32-alsa-lib alsa-plugins lib32-alsa-plugins libpulse \
 	lib32-libpulse alsa-tools alsa-utils pipewire lib32-pipewire pipewire-pulse pipewire-jack lib32-pipewire-jack"
 
 core_pkgs="xorg-xwayland qt6-wayland wayland \
-	lib32-wayland qt5-wayland xorg-server-xephyr gamescope"
+	lib32-wayland qt5-wayland xorg-server-xephyr gamescope libcurl-gnutls"
 
 video_pkgs="mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon \
 	vulkan-intel lib32-vulkan-intel \
