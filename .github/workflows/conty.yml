@@ -2,12 +2,15 @@ name: Conty CI
 
 on:
   schedule:
-    - cron:  '0 0 * * 5'
+    - cron: '0 0 * * 5'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+    env:
+      # Force all JS actions to run on Node.js 24
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: checkout
