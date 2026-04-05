@@ -13,20 +13,20 @@ PACKAGES=(
 	xorg-xwayland qt6-wayland wayland lib32-wayland qt5-wayland xorg-server-xephyr gamescope
 	# video
 	mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon 
-	vulkan-intel lib32-vulkan-intel 
+	vulkan-intel lib32-vulkan-intel mono
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers 
-	lib32-vulkan-mesa-layers libva-mesa-driver lib32-libva-mesa-driver 
-	libva-intel-driver lib32-libva-intel-driver intel-media-driver 
+	lib32-vulkan-mesa-layers
+	libva-intel-driver libva-mesa-intel-driver intel-media-driver 
 	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal 
 	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv
 	#wine
-	wine32 gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+	wine gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav lib32-wine
 	#devel
 	base-devel git meson mingw-w64-gcc cmake
 	#gaming
 	steam prismlauncher gamemode umu-launcher
 	#extra
-	nano vim ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mono-complete mangohud torbrowser-launcher openssh xsel 
+	nano vim ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mangohud torbrowser-launcher openssh xsel 
 	obs-studio rsync yt-dlp nodejs
 )
 
