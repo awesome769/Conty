@@ -15,7 +15,7 @@ PACKAGES=(
 	mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon 
 	vulkan-intel lib32-vulkan-intel mono
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers 
-	lib32-vulkan-mesa-layers intel-media-driver 
+	lib32-vulkan-mesa-layers intel-media-driver libva-intel-driver
 	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal 
 	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv
 	#wine
