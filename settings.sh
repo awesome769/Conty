@@ -16,11 +16,11 @@ PACKAGES=(
 	vulkan-intel lib32-vulkan-intel mono
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers 
 	lib32-vulkan-mesa-layers
-	libva-intel-driver libva-mesa-intel-driver intel-media-driver 
+	libva-mesa-intel-driver intel-media-driver 
 	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal 
 	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv
 	#wine
-	wine gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav lib32-wine
+	wine gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
 	#devel
 	base-devel git meson mingw-w64-gcc cmake
 	#gaming
