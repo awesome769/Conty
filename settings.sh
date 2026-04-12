@@ -26,7 +26,7 @@ PACKAGES=(
 	steam prismlauncher gamemode umu-launcher
 	#extra
 	nano vim ttf-dejavu ttf-liberation jre8-openjdk jre17-openjdk jre21-openjdk mangohud torbrowser-launcher openssh xsel 
-	obs-studio rsync yt-dlp nodejs
+	obs-studio rsync yt-dlp nodejs noto-fonts
 )
 
 # If you want to install AUR packages, specify them in this variable
