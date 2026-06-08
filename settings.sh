@@ -17,7 +17,7 @@ PACKAGES=(
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers 
 	lib32-vulkan-mesa-layers intel-media-driver libva-intel-driver
 	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal 
-	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv
+	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv lib32-libxrandr
 	#wine
 	wine gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
 	#devel
