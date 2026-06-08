@@ -8,7 +8,7 @@ PACKAGES=(
 	# audio
 	alsa-lib lib32-alsa-lib alsa-plugins lib32-alsa-plugins libpulse
 	lib32-libpulse alsa-tools alsa-utils pipewire lib32-pipewire pipewire-pulse
-	pipewire-jack lib32-pipewire-jack sndio lib32-sndio
+	pipewire-jack lib32-pipewire-jack sndio lib32-sndio lib32-libxrandr
 	# core
 	xorg-xwayland qt6-wayland wayland lib32-wayland qt5-wayland xorg-server-xephyr gamescope
 	# video
