@@ -16,8 +16,8 @@ PACKAGES=(
 	vulkan-intel lib32-vulkan-intel mono
 	vulkan-icd-loader lib32-vulkan-icd-loader vulkan-mesa-layers
 	lib32-vulkan-mesa-layers intel-media-driver libva-intel-driver
-	mesa-utils vulkan-tools libva-utils lib32-mesa-utils lib32-openal
-	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv lib32-libxrandr
+	mesa-utils vulkan-tools libva-utils lib32-mesa-utils
+	lib32-glu nettle openal xdelta3 inotify-tools ffmpeg mpv
 	#wine
 	wine gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
 	#devel
@@ -30,7 +30,7 @@ PACKAGES=(
 )
 
 # If you want to install AUR packages, specify them in this variable
-AUR_PACKAGES=(heroic-games-launcher-bin vesktop-bin vscodium-bin lbry-desktop-bin lib32-openssl-1.0 mesen easyrpg-player-git duckstation)
+AUR_PACKAGES=(lib32-openal heroic-games-launcher-bin vesktop-bin vscodium-bin lbry-desktop-bin lib32-openssl-1.0 mesen easyrpg-player-git duckstation)
 
 # ALHP is a repository containing packages from the official Arch Linux
 # repos recompiled with -O3, LTO and optimizations for modern CPUs for
