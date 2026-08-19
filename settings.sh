@@ -30,7 +30,7 @@ PACKAGES=(
 )
 
 # If you want to install AUR packages, specify them in this variable
-AUR_PACKAGES=(lib32-openal heroic-games-launcher-bin vesktop-bin vscodium-bin lbry-desktop-bin lib32-openssl-1.0 mesen easyrpg-player-git duckstation-qt-bin)
+AUR_PACKAGES=(lib32-openal heroic-games-launcher-bin vesktop-bin vscodium-bin lbry-desktop-bin lib32-openssl-1.0 mesen easyrpg-player-git duckstation-qt-bin pcsx2-latest-bin rpcs3-bin)
 
 # ALHP is a repository containing packages from the official Arch Linux
 # repos recompiled with -O3, LTO and optimizations for modern CPUs for
