@@ -31,7 +31,8 @@ jobs:
           fi
 
           chmod +x create-arch-bootstrap.sh create-conty.sh
-          sudo ./create-arch-bootstrap.sh && ./create-conty.sh
+          time sudo ./create-arch-bootstrap.sh 
+          time ./create-conty.sh
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
